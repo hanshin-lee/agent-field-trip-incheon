@@ -48,5 +48,5 @@ and recordings into [`evidence/`](evidence/) **as you collect them**.
 
 ## Stack
 
-Next.js 15 · TypeScript · Tailwind v4 · Vercel AI SDK · deployed on Vercel.
+Next.js 16 · TypeScript · Tailwind v4 · Vercel AI SDK · deployed on Vercel.
 Powered by Runyour Agent (몬드리안에이아이).
