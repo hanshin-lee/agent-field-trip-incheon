@@ -40,13 +40,14 @@ reads this file and keeps going without re-deriving anything.
 
 ## In flight
 
-- [ ] Vercel deploy + env keys (AGENT_PROVIDER + one API key needed in Vercel
-      for the 코스 button to answer; UI works without it, error surfaces cleanly)
+- (none — submitted state)
 
 ## Next
 
 - [ ] Drop a real field photo into `evidence/field-notes/`
-- [ ] Screen recording of the flow for submission backup
+- [ ] Optional: paste one real API key into Vercel env
+      (`vercel env rm GOOGLE_GENERATIVE_AI_API_KEY production` → `vercel env add …` → redeploy)
+      to activate the 장보기 코스 button. UI/map fully work without it.
 
 ## Decisions already made — do not re-litigate
 
@@ -57,4 +58,6 @@ reads this file and keeps going without re-deriving anything.
 
 ## Blockers
 
-- No API key in local `.env.local` (expected — event tokens go in Vercel env).
+- Vercel production env vars exist but are empty placeholders → `/api/health`
+  shows `available: []`. Decision (12:45): ship without key; 코스 button surfaces
+  a clean error. Deployed prod: https://agent-field-trip-incheon.vercel.app
