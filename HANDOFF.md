@@ -8,7 +8,7 @@ reads this file and keeps going without re-deriving anything.
 ## Now
 
 - **Holder:** hanshin (driving via Hermes/Claude from Telegram)
-- **Last updated:** 2026-09-12 — README/video branch review (see current verification below)
+- **Last updated:** 2026-09-12 — menu expansion/ingredient animation review (see `docs/MENU-ANIMATION-VERIFICATION.md`)
 - **Provider in use:** `google`
 
 ## The mission
@@ -32,13 +32,17 @@ reads this file and keeps going without re-deriving anything.
 ## Done
 
 - [x] Repo scaffolded, deploys to Vercel, `/api/health` reports provider keys
-- [x] `lib/market.ts` — 18 stalls, 16 menus in 4 categories, ingredient amounts and recipes
+- [x] `lib/market.ts` — 18 unchanged stalls, 24 menus in 4 categories (6 each), measured ingredient amounts and recipes
 - [x] `app/MarketMap.tsx` — Leaflet + OpenStreetMap tiles, animated pins, dim/highlight; approximate schematic-to-lat/lng stall coordinates
 - [x] `app/page.tsx` — menu chips, seller/ingredient cards, stall detail,
       Agent 장보기 코스 button, `?menu=<id>` deep link
 - [x] `npm run build` green; screenshots in `evidence/screenshots/`
 
 ## In flight
+
+- Follow-up implementation and verification complete; review-only branch `feat/menu-ingredient-animation-20260912`, based on `0a6f63b` (retains prior README/promo; latest fetched main is `1e90c33`). No merge, deployment or publication requested.
+- Agent delegated: eight additional Korean recipes; recipe-driven ingredient-in-a-bowl CSS animation; reduced-motion and rapid-switch checks; README counts and browser evidence. No new runtime dependencies.
+- `next.config.ts`: removed only obsolete Next.js 16 `eslint` option; separate type verification required. Prior field-day `ignoreBuildErrors` preserved.
 
 - README/promo complete and verified on `docs/mock-readme-promo-20260912`, based on `1e90c33`; pending human review, no main merge.
 - Video: `evidence/recordings/sinpo-market-promo.mp4` — 40s, 1280×720, 30fps, H.264/yuv420p, silent, fast-start; full decode and six sampled frames checked.
@@ -62,10 +66,19 @@ reads this file and keeps going without re-deriving anything.
 ## Blockers
 
 - Live check 2026-09-12: public home HTTP 200; `/api/health` reports `active: google`, `available: []`. This proves key presence is empty, not a provider connectivity test. No paid AI request performed. Demo: https://agent-field-trip-incheon.vercel.app
-- `npm run build` passes, but `npx tsc --noEmit` fails at existing `next.config.ts:7` (`eslint` is not a NextConfig property in Next.js 16). Build skips types. Left config unchanged: this task is documentation/media, not app/config repair.
+- Previous README-only branch had TS2353 at `next.config.ts:7`. Resolved on the menu-animation branch by removing the obsolete `eslint` property; separate `npx tsc --noEmit` now passes. Build still skips types under the preserved field-day setting.
 - Real-time stock/prices/hours, exact routing, checkout and verified store coordinates are not implemented.
 
-## README/video verification (2026-09-12)
+## Menu expansion verification (2026-09-12)
+
+- Added 계란빵, 야채튀김, 라볶이, 잔치국수, 콩나물국, 감자조림, 홍합탕, 새우부추전. Existing menu IDs and all 18 stall records preserved; unsupported mappings removed rather than inventing inventory.
+- Data validation: 24 dishes / 4 × 6 categories / 215 measured ingredient rows / 48 unmapped; 16 negative fixture tests. Build and separate types pass.
+- Real browser demo: `evidence/recordings/menu-ingredient-demo.mp4`, 12.766s, 600×1000, H.264/yuv420p, 30fps; full decode and three frames checked.
+- Chromium desktop 1440×1100, mobile 390×844 and narrow 320×740: all 24 menu selections/deep links, exact ingredient amounts, 18 rapid switches, reduced motion, replay, map pins and stall details passed; zero console/page errors. OSM navigation-aborted tile requests recorded separately.
+- Current UI test report: `evidence/menu-ui-verification.json`; details/reproduction in `docs/MENU-ANIMATION-VERIFICATION.md`. Screenshots `11`–`14` supersede earlier captures for this review branch.
+- Branch-specific `vercel.json` excludes only `feat/menu-ingredient-animation-20260912` from Git-triggered deployments. No main merge or deployment command.
+
+## Previous README/video verification (2026-09-12, 16-menu baseline)
 
 - `npm ci`: 0 reported vulnerabilities.
 - Dataset check: 4 categories / 16 unique menu IDs / 18 unique stall IDs; all seller/ingredient references resolve, all recipes have steps and ingredient amounts, projected coordinates are finite. This is structural validation, not factual validation.

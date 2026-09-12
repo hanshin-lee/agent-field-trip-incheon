@@ -106,3 +106,55 @@ body {
   font-size: 9px !important;
 }
 .leaflet-control-attribution a { color: var(--color-ash) !important; }
+
+/* Recipe-driven composition: one finite entrance, no animation runtime. */
+.dish-composition {
+  border: 1px solid #e6ded3;
+  border-radius: 24px;
+  padding: 24px 20px 18px;
+  background: linear-gradient(145deg, #f7f0e7, #f5f3f1 65%, #efe7dc);
+}
+.dish-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dish-eyebrow { color: #77634d; font-size: 11px; letter-spacing: .12em; margin-bottom: 7px; }
+.dish-heading h2 { font-size: 28px; line-height: 1.2; }
+.dish-replay { flex-shrink: 0; min-height: 44px; border: 1px solid #d9cec0; border-radius: 999px; padding: 8px 12px; font-size: 12px; color: #574a3b; background: #fdfaf5; cursor: pointer; }
+.dish-replay span { font-size: 18px; vertical-align: -1px; margin-right: 3px; }
+.dish-subtitle { font-size: 13px; line-height: 1.6; color: #736454; margin-top: 10px; }
+.dish-vessel {
+  position: relative;
+  isolation: isolate;
+  margin-top: 20px;
+  padding: 18px 24px 22px;
+  border: 9px solid #fdfbf7;
+  border-radius: 90px 90px 100px 100px / 60px 60px 72px 72px;
+  background: radial-gradient(ellipse at 50% 15%, #fffdf8, #eee3d1);
+  box-shadow: 0 12px 22px -14px #735c3b70, inset 0 0 0 1px #d8c9b6, inset 0 4px 12px #ad947422;
+}
+.dish-serving { display: flex; justify-content: center; align-items: center; gap: 9px; margin: 0 0 14px; }
+.dish-serving > span:first-child { font-size: 32px; }
+.dish-serving-caption { color: #7b654a; font-size: 11px; letter-spacing: .07em; }
+.dish-ingredients { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 0; margin: 0; list-style: none; }
+.dish-ingredient { display: flex; gap: 7px; align-items: center; min-width: 0; padding: 10px 9px; border: 1px solid #e6ddce; border-radius: 13px; background: #fffdf8ed; box-shadow: 0 2px 4px #735c3b09; animation: ingredient-arrive 620ms cubic-bezier(.2,.75,.25,1) var(--ingredient-delay) both; }
+.dish-ingredient-icon { font-size: 23px; flex-shrink: 0; }
+.dish-ingredient-copy { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.dish-ingredient-name { font-size: 12px; font-weight: 500; color: #453b2d; overflow-wrap: anywhere; }
+.dish-ingredient-amount { font-size: 11px; line-height: 1.5; color: #76624b; overflow-wrap: anywhere; }
+.dish-vessel-foot { text-align: center; font-size: 10px; letter-spacing: .06em; color: #846d51; margin-top: 16px; }
+.dish-note { margin-top: 17px; color: #776b5d; font-size: 11px; line-height: 1.7; text-align: center; }
+@keyframes ingredient-arrive {
+  from { opacity: 0; transform: translate(var(--ingredient-from-x), -28px) rotate(var(--ingredient-tilt)) scale(.82); }
+  75% { opacity: 1; }
+  to { opacity: 1; transform: translate(0, 0) rotate(0) scale(1); }
+}
+button:focus-visible { outline: 2px solid #0447ff; outline-offset: 3px; }
+@media (max-width: 380px) {
+  .dish-composition { padding: 20px 12px 16px; }
+  .dish-heading h2 { font-size: 24px; }
+  .dish-vessel { padding: 16px 10px 20px; border-width: 6px; border-radius: 50px; }
+  .dish-ingredient { gap: 4px; padding: 8px 6px; }
+  .dish-ingredient-icon { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dish-ingredient, .dala-pin > div { animation: none !important; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0s !important; }
+}

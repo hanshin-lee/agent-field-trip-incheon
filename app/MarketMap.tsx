@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Map as LeafletMap, Marker, CircleMarker } from "leaflet";
 import { STALLS, MARKET_CENTER, stallLatLng } from "@/lib/market";
 
@@ -27,9 +27,8 @@ function pinHtml(color: string, big: boolean, glow: boolean) {
 }
 
 /**
- * Real interactive map (Leaflet + CARTO dark tiles — keyless) of
- * 신포국제시장. Stalls are glowing point-lights on the dark basemap;
- * violet = sells the dish, amber = sells ingredients.
+ * Leaflet + OpenStreetMap tiles with approximate curated stall coordinates.
+ * Blue = registered dish sellers, orange = registered ingredient mappings.
  */
 export default function MarketMap({
   highlightSellers,
@@ -37,6 +36,7 @@ export default function MarketMap({
   selectedStallId,
   onSelect,
 }: Props) {
+  const [ready, setReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markersRef = useRef<Record<string, Marker>>({});
@@ -68,8 +68,8 @@ export default function MarketMap({
       map.on("click", () => onSelect(null));
       mapRef.current = map;
 
-      // draw markers immediately with current highlight state
-      drawMarkers();
+      // Run the effects with the latest selection, not the async init closure.
+      setReady(true);
     })();
     return () => {
       cancelled = true;
@@ -140,12 +140,12 @@ export default function MarketMap({
         .map((id) => STALLS.find((s) => s.id === id))
         .filter(Boolean)
         .map((s) => stallLatLng(s!));
-      map.fitBounds(L.latLngBounds(pts), { padding: [46, 46], maxZoom: 18 });
+      map.fitBounds(L.latLngBounds(pts), { padding: [46, 46], maxZoom: 18, animate: !window.matchMedia("(prefers-reduced-motion: reduce)").matches });
     } else {
-      map.setView(MARKET_CENTER, 17);
+      map.setView(MARKET_CENTER, 17, { animate: !window.matchMedia("(prefers-reduced-motion: reduce)").matches });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [highlightSellers, highlightIngredients]);
+  }, [highlightSellers, highlightIngredients, ready]);
 
   // selection ring
   useEffect(() => {
@@ -163,13 +163,13 @@ export default function MarketMap({
           fill: false,
           dashArray: "3 4",
         }).addTo(map);
-        map.panTo(stallLatLng(s));
+        map.panTo(stallLatLng(s), { animate: !window.matchMedia("(prefers-reduced-motion: reduce)").matches });
       }
     }
     return () => {
       ring?.remove();
     };
-  }, [selectedStallId]);
+  }, [selectedStallId, ready]);
 
   return (
     <div

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import DishComposition from "./DishComposition";
 import { CATEGORIES, MENUS, menusByCategory, stallById } from "@/lib/market";
 
 // Leaflet touches `window` — client-only
@@ -65,7 +66,7 @@ export default function Home() {
         `시장 구조: 서문(x=0)에서 동문(x=100)으로 이어지는 중앙 아케이드 하나, 중간(x=53~63)에 사잇길.`,
         `들를 가게 (위치 x값 순서로 동선 최적화할 것):`,
         ...stops.map((s) => `- ${s}`),
-        sellers ? `완제품을 파는 집: ${sellers}` : `이 메뉴는 완제품 파는 집이 없다 — 직접 만들어야 한다.`,
+        sellers ? `완제품을 파는 집: ${sellers}` : `이 메뉴는 완제품 판매점이 데이터에 등록되지 않았다. 실제 판매 여부는 확인이 필요하다.`,
         `출력: ①걷는 순서대로 번호 매긴 코스(각 가게에서 살 것 + 한 줄 팁) ②마지막 한 줄 조언. 전체 8줄 이내, 반말 금지, 이모지 소량.`,
       ].join("\n");
 
@@ -100,19 +101,20 @@ export default function Home() {
       </header>
 
       {/* category tabs — hairline underline style */}
-      <nav className="mt-8 flex gap-1 border-b border-[var(--color-stone)]">
+      <nav aria-label="메뉴 카테고리" className="mt-8 flex gap-1 overflow-x-auto border-b border-[var(--color-stone)]">
         {CATEGORIES.map((c) => {
           const active = c === category;
           return (
             <button
               key={c}
+              aria-pressed={active}
               onClick={() => {
                 setCategory(c);
                 setMenuId(null);
                 setSelectedStallId(null);
                 setRoute("");
               }}
-              className={`body-copy -mb-px px-3 py-2.5 text-[14px] transition-colors ${
+              className={`body-copy shrink-0 -mb-px px-3 py-2.5 text-[14px] transition-colors ${
                 active
                   ? "border-b-2 border-[var(--color-ink)] font-medium text-[var(--color-ink)]"
                   : "border-b-2 border-transparent text-[var(--color-ash)]"
@@ -125,12 +127,13 @@ export default function Home() {
       </nav>
 
       {/* menu pills for current category */}
-      <section className="-mx-1 mt-5 flex gap-2 overflow-x-auto px-1 pb-1">
+      <section aria-label={`${category} 메뉴`} className="-mx-1 mt-5 flex flex-wrap gap-2 px-1 pb-1">
         {categoryMenus.map((m) => {
           const active = m.id === menuId;
           return (
             <button
               key={m.id}
+              aria-pressed={active}
               onClick={() => {
                 setMenuId(active ? null : m.id);
                 setSelectedStallId(null);
@@ -149,6 +152,8 @@ export default function Home() {
         })}
       </section>
 
+      {menu && <DishComposition key={menu.id} menu={menu} />}
+
       {/* map */}
       <section className="mt-6">
         <MarketMap
@@ -163,6 +168,10 @@ export default function Home() {
           <span className="ml-auto text-[var(--color-ash)]">핀을 눌러 가게 구경하기</span>
         </div>
       </section>
+
+      <p className="body-copy mt-3 text-[12px] leading-relaxed text-[var(--color-smoke)]">
+        시연용 가게·품목 연결과 근사 위치입니다. 실제 판매 여부와 위치는 방문 전 확인해 주세요.
+      </p>
 
       {/* stall detail */}
       {selectedStall && (
@@ -239,6 +248,7 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="body-copy mt-0.5 text-[13px] text-[var(--color-smoke)]">
+                    {ing.stallIds.length === 0 && <span>집에서 준비 · 연결된 가게 미등록</span>}
                     {ing.stallIds.map((id, i) => {
                       const s = stallById(id)!;
                       return (

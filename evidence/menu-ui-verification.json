@@ -1,0 +1,94 @@
+{
+  "date": "2026-09-12T04:58:12.274Z",
+  "menus": 24,
+  "stalls": 18,
+  "checks": [
+    "desktop deep link, entrance/replay animation frames, quantities, map, recipe",
+    "all 24 dishes render exact ingredient names/quantities and preserve recipe/map",
+    "18 rapid selections, no stale ingredients after settling",
+    "seller buttons and map pin open matching stall details",
+    "unknown deep link safely shows unselected menu state",
+    "mobile: all 24 deep links, no page overflow",
+    "320px narrow mobile: all ingredient labels/amounts fit",
+    "reduced motion: fully visible static ingredients, no pin pulse, keyboard replay"
+  ],
+  "errors": [],
+  "networkFailures": [
+    {
+      "url": "https://tile.openstreetmap.org/17/111639/50801.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111639/50800.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111638/50801.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111640/50801.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111639/50802.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111638/50800.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111640/50800.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111638/50802.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111640/50802.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111639/50800.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111640/50801.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111638/50800.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111640/50800.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111640/50802.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111639/50800.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111640/50801.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111638/50800.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111640/50800.png",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://tile.openstreetmap.org/17/111640/50802.png",
+      "error": "net::ERR_ABORTED"
+    }
+  ]
+}
