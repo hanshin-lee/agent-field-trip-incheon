@@ -68,24 +68,27 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-xl flex-col gap-5 p-5">
+    <main className="mx-auto flex min-h-screen max-w-xl flex-col px-6 pb-16 pt-10">
+      {/* hero — sculptural headline on the void */}
       <header>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">
+        <p className="nav-label text-[var(--color-saffron-spark)]">
           인천 중구 · 신포국제시장
         </p>
-        <h1 className="mt-1 text-[26px] font-bold leading-tight tracking-tight">
-          신포 장보기 지도
+        <h1 className="display-tight mt-4 text-[44px] leading-[1.05] sm:text-[56px]">
+          신포
+          <br />
+          장보기 지도
         </h1>
-        <p className="mt-1.5 text-sm leading-relaxed text-[var(--muted)]">
+        <p className="body-light mt-6 max-w-[480px] text-[17px] leading-relaxed text-[var(--color-silver-mist)]">
           먹고 싶은 메뉴를 고르면, 미로 같은 시장에서{" "}
-          <span className="font-semibold text-[var(--accent)]">파는 집</span>과{" "}
-          <span className="font-semibold text-[var(--green)]">재료 파는 가게</span>를
-          바로 짚어드립니다.
+          <span className="font-normal text-[var(--color-electric-iris)]">파는 집</span>과{" "}
+          <span className="font-normal text-[var(--color-saffron-spark)]">재료 파는 가게</span>가
+          별자리처럼 켜집니다.
         </p>
       </header>
 
-      {/* menu chips */}
-      <section className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+      {/* menu chips — ghost pills, active = white on void */}
+      <section className="-mx-1 mt-10 flex gap-2 overflow-x-auto px-1 pb-1">
         {MENUS.map((m) => {
           const active = m.id === menuId;
           return (
@@ -96,10 +99,10 @@ export default function Home() {
                 setSelectedStallId(null);
                 setRoute("");
               }}
-              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+              className={`nav-label shrink-0 rounded-full px-5 py-3 transition-all ${
                 active
-                  ? "border-[var(--fg)] bg-[var(--fg)] text-[var(--bg)] shadow-sm"
-                  : "border-[var(--line)] bg-[var(--card)] text-[var(--fg)] active:scale-95"
+                  ? "bg-[var(--color-bone-white)] text-[var(--color-void)]"
+                  : "text-[var(--color-ash-gray)] active:scale-95"
               }`}
             >
               {m.emoji} {m.name}
@@ -108,111 +111,110 @@ export default function Home() {
         })}
       </section>
 
-      {/* map card */}
-      <section className="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3 shadow-[0_1px_3px_rgba(28,25,23,0.06)]">
+      {/* the constellation map — floats directly on the void, no card */}
+      <section className="mt-8">
         <MarketMap
           highlightSellers={highlightSellers}
           highlightIngredients={highlightIngredients}
           selectedStallId={selectedStallId}
           onSelect={setSelectedStallId}
         />
-        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-[11px] text-[var(--muted)]">
-          <Legend color="var(--accent)" label={menu ? `${menu.name} 파는 집` : "먹거리"} strong={!!menu} />
-          <Legend color="var(--green)" label={menu ? "재료 가게" : "식재료"} strong={!!menu} />
-          <span className="ml-auto">핀을 눌러 가게 정보 보기</span>
+        <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] text-[var(--color-ash-gray)]">
+          <Legend color="var(--color-electric-iris)" label={menu ? `${menu.name} 파는 집` : "먹거리"} strong={!!menu} />
+          <Legend color="var(--color-saffron-spark)" label={menu ? "재료 가게" : "식재료"} strong={!!menu} />
+          <span className="body-light ml-auto">핀을 눌러 가게 정보 보기</span>
         </div>
       </section>
 
-      {/* stall detail */}
+      {/* stall detail — floats with whitespace only */}
       {selectedStall && (
-        <section className="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4">
-          <div className="flex items-baseline justify-between gap-2">
-            <h2 className="text-base font-bold">{selectedStall.name}</h2>
-            <span className="text-[11px] font-medium text-[var(--muted)]">{selectedStall.zone}</span>
-          </div>
-          <p className="mt-1.5 text-sm leading-relaxed text-[var(--muted)]">
+        <section className="mt-10">
+          <p className="nav-label text-[var(--color-electric-iris)]">{selectedStall.zone}</p>
+          <h2 className="display-tight mt-2 text-[27px] leading-none">{selectedStall.name}</h2>
+          <p className="body-light mt-3 text-[17px] leading-relaxed text-[var(--color-silver-mist)]">
             {selectedStall.items.join(" · ")}
           </p>
         </section>
       )}
 
-      {/* menu breakdown */}
+      {/* menu breakdown — typographic blocks, zero containers */}
       {menu && (
-        <section className="flex flex-col gap-3">
-          <div className="rounded-2xl border border-[var(--accent-soft)] bg-[var(--accent-soft)] p-4">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--accent)]">
-              바로 사 먹기
-            </p>
-            <ul className="mt-2 flex flex-col gap-1.5">
+        <>
+          <section className="mt-14">
+            <p className="nav-label text-[var(--color-electric-iris)]">바로 사 먹기</p>
+            <ul className="mt-4 flex flex-col gap-3">
               {menu.sellerIds.map((id) => {
                 const s = stallById(id)!;
                 return (
                   <li key={id}>
                     <button
                       onClick={() => setSelectedStallId(id)}
-                      className="text-left text-sm font-semibold underline-offset-2 active:underline"
+                      className="display-tight text-left text-[24px] leading-tight text-[var(--color-bone-white)] underline-offset-4 active:underline"
                     >
-                      {s.name} <span className="font-normal text-[var(--muted)]">· {s.zone}</span>
+                      {s.name}
+                      <span className="body-light ml-3 text-[14px] tracking-normal text-[var(--color-ash-gray)]">
+                        {s.zone}
+                      </span>
                     </button>
                   </li>
                 );
               })}
             </ul>
-          </div>
+          </section>
 
-          <div className="rounded-2xl border border-[var(--green-soft)] bg-[var(--green-soft)] p-4">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--green)]">
-              직접 만들기 — 재료 지도
-            </p>
-            <ul className="mt-2 flex flex-col gap-2">
+          <section className="mt-14">
+            <p className="nav-label text-[var(--color-saffron-spark)]">직접 만들기 — 재료 지도</p>
+            <ul className="mt-4 flex flex-col gap-4">
               {menu.ingredients.map((ing) => (
-                <li key={ing.name} className="text-sm leading-snug">
-                  <span className="font-semibold">{ing.name}</span>
-                  <span className="text-[var(--muted)]">
-                    {" → "}
+                <li key={ing.name} className="leading-snug">
+                  <span className="text-[17px] font-normal">{ing.name}</span>
+                  <div className="body-light mt-0.5 text-[15px] text-[var(--color-silver-mist)]">
                     {ing.stallIds.map((id, i) => {
                       const s = stallById(id)!;
                       return (
                         <button
                           key={id}
                           onClick={() => setSelectedStallId(id)}
-                          className="underline-offset-2 active:underline"
+                          className="text-[var(--color-saffron-spark)] underline-offset-2 active:underline"
                         >
                           {i > 0 ? ", " : ""}
                           {s.name}
                         </button>
                       );
                     })}
-                  </span>
+                  </div>
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
 
+          {/* the single violet pill — sole primary action */}
           <button
             onClick={askRoute}
             disabled={busy}
-            className="rounded-2xl bg-[var(--fg)] px-4 py-3.5 text-base font-bold text-[var(--bg)] shadow-sm transition-transform active:scale-[0.98] disabled:opacity-40"
+            className="nav-label mt-14 rounded-full bg-[var(--color-electric-iris)] px-6 py-4 text-[var(--color-bone-white)] transition-transform active:scale-[0.98] disabled:opacity-40"
           >
-            {busy ? "코스 짜는 중…" : `🧺 Agent에게 ${menu.name} 장보기 코스 부탁하기`}
+            {busy ? "코스 짜는 중…" : `${menu.name} 장보기 코스 요청`}
           </button>
 
           {route && (
-            <section className="whitespace-pre-wrap rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4 text-sm leading-relaxed">
+            <section className="body-light mt-8 whitespace-pre-wrap text-[16px] leading-relaxed text-[var(--color-silver-mist)]">
               {route}
             </section>
           )}
-        </section>
+        </>
       )}
 
       {!menu && (
-        <p className="rounded-2xl border border-dashed border-[var(--line)] p-4 text-center text-sm text-[var(--muted)]">
-          위에서 메뉴를 골라보세요 — 지도에 파는 집과 재료 가게가 켜집니다.
+        <p className="body-light mt-14 text-center text-[15px] text-[var(--color-ash-gray)]">
+          위에서 메뉴를 골라보세요 — 지도의 별들이 켜집니다.
         </p>
       )}
 
-      <footer className="mt-auto pt-4 text-center text-[11px] text-[var(--muted)]">
-        Agent Field Trip 2026 · GDG Incheon · 신포국제시장에서
+      <footer className="nav-label mt-auto pt-16 text-center text-[10px] leading-relaxed text-[var(--color-ash-gray)]">
+        Agent Field Trip 2026
+        <br />
+        GDG Incheon · 신포국제시장
       </footer>
     </main>
   );
@@ -222,7 +224,7 @@ function Legend({ color, label, strong }: { color: string; label: string; strong
   return (
     <span className="inline-flex items-center gap-1.5">
       <span
-        className="inline-block h-2.5 w-2.5 rounded-full"
+        className="inline-block h-2 w-2 rounded-full"
         style={{ background: color, opacity: strong ? 1 : 0.45 }}
       />
       {label}
