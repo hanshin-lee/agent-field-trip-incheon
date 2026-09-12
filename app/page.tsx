@@ -8,8 +8,8 @@ import { MENUS, stallById } from "@/lib/market";
 const MarketMap = dynamic(() => import("./MarketMap"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-[420px] w-full items-center justify-center rounded-3xl bg-black">
-      <span className="body-light text-[14px] text-[var(--color-ash-gray)]">지도 불러오는 중…</span>
+    <div className="flex h-[420px] w-full items-center justify-center rounded-[20px] border border-[var(--color-stone)] bg-[var(--color-warm-taupe)]">
+      <span className="body-copy text-[14px] text-[var(--color-ash)]">지도를 펼치는 중…</span>
     </div>
   ),
 });
@@ -78,27 +78,23 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-xl flex-col px-6 pb-16 pt-10">
-      {/* hero — sculptural headline on the void */}
+    <main className="mx-auto flex min-h-screen max-w-xl flex-col px-5 pb-14 pt-9">
+      {/* hero — whisper-weight editorial headline on paper */}
       <header>
-        <p className="nav-label text-[var(--color-saffron-spark)]">
-          인천 중구 · 신포국제시장
-        </p>
-        <h1 className="display-tight mt-4 text-[44px] leading-[1.05] sm:text-[56px]">
-          신포
+        <p className="label-quiet">인천 중구 · 신포국제시장</p>
+        <h1 className="display-whisper mt-3 text-[40px] leading-[1.08] sm:text-[48px]">
+          오늘 뭐 먹지?
           <br />
-          장보기 지도
+          시장이 답해요.
         </h1>
-        <p className="body-light mt-6 max-w-[480px] text-[17px] leading-relaxed text-[var(--color-silver-mist)]">
-          먹고 싶은 메뉴를 고르면, 미로 같은 시장에서{" "}
-          <span className="font-normal text-[var(--color-electric-iris)]">파는 집</span>과{" "}
-          <span className="font-normal text-[var(--color-saffron-spark)]">재료 파는 가게</span>가
-          별자리처럼 켜집니다.
+        <p className="body-copy mt-5 max-w-[480px] text-[16px] leading-relaxed text-[var(--color-smoke)]">
+          미로 같은 신포시장, 헤매지 마세요. 먹고 싶은 메뉴를 고르면 파는 집과
+          재료 가게를 지도에 바로 짚어드립니다 — 단골처럼 장 보세요.
         </p>
       </header>
 
-      {/* menu chips — ghost pills, active = white on void */}
-      <section className="-mx-1 mt-10 flex gap-2 overflow-x-auto px-1 pb-1">
+      {/* menu pills — outline pills, active = ink fill */}
+      <section className="-mx-1 mt-8 flex gap-2 overflow-x-auto px-1 pb-1">
         {MENUS.map((m) => {
           const active = m.id === menuId;
           return (
@@ -109,11 +105,12 @@ export default function Home() {
                 setSelectedStallId(null);
                 setRoute("");
               }}
-              className={`nav-label shrink-0 rounded-full px-5 py-3 transition-all ${
+              className={`body-copy shrink-0 rounded-full border px-4 py-2.5 text-[14px] font-medium transition-all ${
                 active
-                  ? "bg-[var(--color-bone-white)] text-[var(--color-void)]"
-                  : "text-[var(--color-ash-gray)] active:scale-95"
+                  ? "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-eggshell)]"
+                  : "border-[var(--color-stone)] bg-[var(--color-eggshell)] text-[var(--color-ink)] active:scale-95"
               }`}
+              style={!active ? { boxShadow: "var(--shadow-subtle)" } : undefined}
             >
               {m.emoji} {m.name}
             </button>
@@ -121,37 +118,42 @@ export default function Home() {
         })}
       </section>
 
-      {/* the constellation map — floats directly on the void, no card */}
-      <section className="mt-8">
+      {/* the map — the one place violet & orange sparks live */}
+      <section className="mt-7">
         <MarketMap
           highlightSellers={highlightSellers}
           highlightIngredients={highlightIngredients}
           selectedStallId={selectedStallId}
           onSelect={setSelectedStallId}
         />
-        <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] text-[var(--color-ash-gray)]">
-          <Legend color="var(--color-electric-iris)" label={menu ? `${menu.name} 파는 집` : "먹거리"} strong={!!menu} />
-          <Legend color="var(--color-saffron-spark)" label={menu ? "재료 가게" : "식재료"} strong={!!menu} />
-          <span className="body-light ml-auto">핀을 눌러 가게 정보 보기</span>
+        <div className="body-copy mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-[12px] text-[var(--color-smoke)]">
+          <Legend color="var(--color-violet-spark)" label={menu ? `${menu.name} 파는 집` : "먹거리"} strong={!!menu} />
+          <Legend color="var(--color-ember-orange)" label={menu ? "재료 가게" : "식재료"} strong={!!menu} />
+          <span className="ml-auto text-[var(--color-ash)]">핀을 눌러 가게 구경하기</span>
         </div>
       </section>
 
-      {/* stall detail — floats with whitespace only */}
+      {/* stall detail — white card, whisper shadow */}
       {selectedStall && (
-        <section className="mt-10">
-          <p className="nav-label text-[var(--color-electric-iris)]">{selectedStall.zone}</p>
-          <h2 className="display-tight mt-2 text-[27px] leading-none">{selectedStall.name}</h2>
-          <p className="body-light mt-3 text-[17px] leading-relaxed text-[var(--color-silver-mist)]">
+        <section
+          className="mt-6 rounded-[20px] bg-[var(--color-eggshell)] p-5"
+          style={{ boxShadow: "var(--shadow-subtle)" }}
+        >
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 className="display-whisper text-[24px]">{selectedStall.name}</h2>
+            <span className="label-quiet">{selectedStall.zone}</span>
+          </div>
+          <p className="body-copy mt-2 text-[14px] leading-relaxed text-[var(--color-smoke)]">
             {selectedStall.items.join(" · ")}
           </p>
         </section>
       )}
 
-      {/* menu breakdown — typographic blocks, zero containers */}
+      {/* menu breakdown — taupe feature cards, flat, 20px radius */}
       {menu && (
         <>
-          <section className="mt-14">
-            <p className="nav-label text-[var(--color-electric-iris)]">바로 사 먹기</p>
+          <section className="mt-8 rounded-[20px] bg-[var(--color-warm-taupe)] p-7">
+            <p className="label-quiet">바로 사 먹기</p>
             <ul className="mt-4 flex flex-col gap-3">
               {menu.sellerIds.map((id) => {
                 const s = stallById(id)!;
@@ -159,10 +161,10 @@ export default function Home() {
                   <li key={id}>
                     <button
                       onClick={() => setSelectedStallId(id)}
-                      className="display-tight text-left text-[24px] leading-tight text-[var(--color-bone-white)] underline-offset-4 active:underline"
+                      className="display-whisper text-left text-[22px] leading-tight text-[var(--color-ink)] underline-offset-4 active:underline"
                     >
                       {s.name}
-                      <span className="body-light ml-3 text-[14px] tracking-normal text-[var(--color-ash-gray)]">
+                      <span className="body-copy ml-2.5 text-[13px] font-normal tracking-normal text-[var(--color-ash)]">
                         {s.zone}
                       </span>
                     </button>
@@ -172,20 +174,25 @@ export default function Home() {
             </ul>
           </section>
 
-          <section className="mt-14">
-            <p className="nav-label text-[var(--color-saffron-spark)]">직접 만들기 — 재료 지도</p>
-            <ul className="mt-4 flex flex-col gap-4">
-              {menu.ingredients.map((ing) => (
-                <li key={ing.name} className="leading-snug">
-                  <span className="text-[17px] font-normal">{ing.name}</span>
-                  <div className="body-light mt-0.5 text-[15px] text-[var(--color-silver-mist)]">
+          <section className="mt-4 rounded-[20px] bg-[var(--color-warm-taupe)] p-7">
+            <p className="label-quiet">직접 만들어 먹기 — 장바구니</p>
+            <ul className="mt-4 flex flex-col gap-0">
+              {menu.ingredients.map((ing, idx) => (
+                <li
+                  key={ing.name}
+                  className={`py-3 ${idx > 0 ? "border-t border-[var(--color-stone)]" : ""}`}
+                >
+                  <span className="body-copy text-[15px] font-medium text-[var(--color-graphite)]">
+                    {ing.name}
+                  </span>
+                  <div className="body-copy mt-0.5 text-[14px] text-[var(--color-smoke)]">
                     {ing.stallIds.map((id, i) => {
                       const s = stallById(id)!;
                       return (
                         <button
                           key={id}
                           onClick={() => setSelectedStallId(id)}
-                          className="text-[var(--color-saffron-spark)] underline-offset-2 active:underline"
+                          className="underline decoration-[var(--color-stone)] underline-offset-2 active:decoration-[var(--color-ink)]"
                         >
                           {i > 0 ? ", " : ""}
                           {s.name}
@@ -198,17 +205,20 @@ export default function Home() {
             </ul>
           </section>
 
-          {/* the single violet pill — sole primary action */}
+          {/* single ink pill — primary action */}
           <button
             onClick={askRoute}
             disabled={busy}
-            className="nav-label mt-14 rounded-full bg-[var(--color-electric-iris)] px-6 py-4 text-[var(--color-bone-white)] transition-transform active:scale-[0.98] disabled:opacity-40"
+            className="body-copy mt-6 rounded-full border border-[#e5e5e5] bg-[var(--color-ink)] px-6 py-3.5 text-[15px] font-medium text-[var(--color-eggshell)] transition-transform active:scale-[0.98] disabled:opacity-40"
           >
-            {busy ? "코스 짜는 중…" : `${menu.name} 장보기 코스 요청`}
+            {busy ? "단골 아주머니께 여쭤보는 중…" : `🧺 ${menu.name} 장보기 코스 추천받기`}
           </button>
 
           {route && (
-            <section className="body-light mt-8 whitespace-pre-wrap text-[16px] leading-relaxed text-[var(--color-silver-mist)]">
+            <section
+              className="body-copy mt-5 whitespace-pre-wrap rounded-[20px] bg-[var(--color-eggshell)] p-5 text-[14px] leading-relaxed text-[var(--color-graphite)]"
+              style={{ boxShadow: "var(--shadow-subtle)" }}
+            >
               {route}
             </section>
           )}
@@ -216,15 +226,16 @@ export default function Home() {
       )}
 
       {!menu && (
-        <p className="body-light mt-14 text-center text-[15px] text-[var(--color-ash-gray)]">
-          위에서 메뉴를 골라보세요 — 지도의 별들이 켜집니다.
+        <p className="body-copy mt-10 rounded-[20px] border border-dashed border-[var(--color-stone)] p-6 text-center text-[14px] text-[var(--color-ash)]">
+          위에서 오늘의 메뉴를 골라보세요 — 시장 골목이 환해집니다.
         </p>
       )}
 
-      <footer className="nav-label mt-auto pt-16 text-center text-[10px] leading-relaxed text-[var(--color-ash-gray)]">
-        Agent Field Trip 2026
-        <br />
-        GDG Incheon · 신포국제시장
+      <footer className="mt-auto border-t border-[var(--color-stone)] pt-6 text-center">
+        <p className="label-quiet">Agent Field Trip 2026 · GDG Incheon</p>
+        <p className="body-copy mt-1 text-[12px] text-[var(--color-ash)]">
+          신포국제시장에서, 사람 냄새 나는 장보기
+        </p>
       </footer>
     </main>
   );
@@ -234,8 +245,8 @@ function Legend({ color, label, strong }: { color: string; label: string; strong
   return (
     <span className="inline-flex items-center gap-1.5">
       <span
-        className="inline-block h-2 w-2 rounded-full"
-        style={{ background: color, opacity: strong ? 1 : 0.45 }}
+        className="inline-block h-2.5 w-2.5 rounded-full border border-[var(--color-eggshell)]"
+        style={{ background: color, opacity: strong ? 1 : 0.4, boxShadow: "0 1px 2px rgba(0,0,0,0.15)" }}
       />
       {label}
     </span>

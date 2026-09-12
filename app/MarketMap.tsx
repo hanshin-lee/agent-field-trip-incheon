@@ -11,18 +11,18 @@ interface Props {
   onSelect: (id: string | null) => void;
 }
 
-const IRIS = "#8052ff";
-const SPARK = "#ffb829";
-const DIM = "rgba(255,255,255,0.45)";
+const IRIS = "#0447ff";
+const SPARK = "#ff4704";
+const DIM = "#a59f97";
 
 function pinHtml(color: string, big: boolean, glow: boolean) {
   const size = big ? 18 : 11;
   return `<div style="
     width:${size}px;height:${size}px;border-radius:50%;
     background:${color};
-    border:1.5px solid rgba(255,255,255,0.85);
-    box-shadow:${glow ? `0 0 12px 3px ${color}88, 0 0 3px 1px ${color}` : "0 0 4px rgba(0,0,0,0.8)"};
-    ${glow ? "animation: dala-pulse 1.6s ease-out infinite;" : ""}
+    border:2px solid #fdfcfc;
+    box-shadow:${glow ? `0 0 0 3px ${color}22, 0 1px 4px rgba(0,0,0,0.25)` : "0 1px 3px rgba(0,0,0,0.2)"};
+    ${glow ? "animation: dala-pulse 1.6s ease-in-out infinite;" : ""}
   "></div>`;
 }
 
@@ -158,7 +158,7 @@ export default function MarketMap({
       if (s) {
         ring = L.circleMarker(stallLatLng(s), {
           radius: 16,
-          color: "#ffffff",
+          color: "#44403b",
           weight: 1.5,
           fill: false,
           dashArray: "3 4",
@@ -174,8 +174,8 @@ export default function MarketMap({
   return (
     <div
       ref={containerRef}
-      className="h-[420px] w-full overflow-hidden rounded-3xl"
-      style={{ background: "#000" }}
+      className="h-[420px] w-full overflow-hidden rounded-[20px] border border-[var(--color-stone)]"
+      style={{ background: "var(--color-warm-taupe)" }}
     />
   );
 }

@@ -1,33 +1,38 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
-/* ── Dala style system: constellation floating on black velvet ── */
+/* ── ElevenLabs-style warm cream editorial · farmers-market friendly ── */
 :root {
-  --color-void: #000000;
-  --color-bone-white: #ffffff;
-  --color-ash-gray: #9a9a9a;
-  --color-silver-mist: #bdbdbd;
-  --color-electric-iris: #8052ff;
-  --color-saffron-spark: #ffb829;
-  --color-deep-verdant: #15846e;
+  --color-eggshell: #fdfcfc;
+  --color-warm-taupe: #f5f3f1;
+  --color-stone: #ebe8e4;
+  --color-ink: #000000;
+  --color-graphite: #44403b;
+  --color-smoke: #777169;
+  --color-ash: #a59f97;
+  --color-violet-spark: #0447ff;
+  --color-ember-orange: #ff4704;
 
-  --font-ppneuemontreal: "PPNeueMontreal", Inter, ui-sans-serif, system-ui,
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-inter: "Inter", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* legacy aliases used by components */
-  --bg: var(--color-void);
-  --fg: var(--color-bone-white);
-  --muted: var(--color-ash-gray);
-  --line: rgba(255, 255, 255, 0.14);
-  --accent: var(--color-electric-iris);
-  --green: var(--color-saffron-spark);
+  --shadow-subtle: rgba(0, 0, 0, 0.4) 0px 0px 1px 0px,
+    rgba(0, 0, 0, 0.04) 0px 1px 1px 0px, rgba(0, 0, 0, 0.04) 0px 2px 4px 0px;
+
+  /* legacy aliases */
+  --bg: var(--color-eggshell);
+  --fg: var(--color-ink);
+  --muted: var(--color-smoke);
+  --line: var(--color-stone);
+  --accent: var(--color-violet-spark);
+  --green: var(--color-ember-orange);
 }
 
 html,
 body {
-  background: var(--color-void);
-  color: var(--color-bone-white);
-  font-family: var(--font-ppneuemontreal);
+  background: var(--color-eggshell);
+  color: var(--color-ink);
+  font-family: var(--font-inter);
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "ss01";
@@ -35,23 +40,24 @@ body {
   word-break: keep-all;
 }
 
-/* weight-200 airy body copy — the Dala signature */
-.body-light {
-  font-weight: 200;
+/* whisper-weight display — the Waldenburg signature (Inter 300 substitute) */
+.display-whisper {
+  font-weight: 300;
+  letter-spacing: -0.02em;
 }
 
-/* uppercase small label */
-.nav-label {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.35px;
+/* body copy tracking +0.01em at 14–16px */
+.body-copy {
+  letter-spacing: 0.01em;
+}
+
+/* small editorial label */
+.label-quiet {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  line-height: 1.2;
-}
-
-.display-tight {
-  font-weight: 400;
-  letter-spacing: -0.04em;
+  color: var(--color-ash);
 }
 
 @keyframes pin-pop {
@@ -59,59 +65,44 @@ body {
   70% { transform: scale(1.25); }
   100% { transform: scale(1); }
 }
-.pin-pop { animation: pin-pop 0.35s ease-out both; transform-origin: center; transform-box: fill-box; }
 
-@keyframes pulse-ring {
-  0% { opacity: 0.7; transform: scale(1); }
-  100% { opacity: 0; transform: scale(2.4); }
-}
-.pulse-ring { animation: pulse-ring 1.6s ease-out infinite; transform-origin: center; transform-box: fill-box; }
-
-@keyframes drift {
-  0%   { transform: translate(0, 0) rotate(0deg); }
-  50%  { transform: translate(4px, -6px) rotate(24deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
-}
-.tri-drift { animation: drift 9s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-.tri-drift-slow { animation: drift 14s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-
-/* ── Leaflet: Dala skin ── */
+/* ── Leaflet: cream editorial skin ── */
 @keyframes dala-pulse {
-  0%, 100% { transform: scale(1); filter: brightness(1); }
-  50% { transform: scale(1.18); filter: brightness(1.35); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
 }
 .dala-pin { background: transparent; border: none; }
 
 .dala-tooltip {
-  background: rgba(0, 0, 0, 0.82);
-  color: var(--color-bone-white);
-  border: none;
+  background: var(--color-eggshell);
+  color: var(--color-ink);
+  border: 1px solid var(--color-stone);
   border-radius: 9999px;
-  padding: 3px 10px;
-  font-family: var(--font-ppneuemontreal);
+  padding: 3px 11px;
+  font-family: var(--font-inter);
   font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.2px;
-  box-shadow: none;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  box-shadow: var(--shadow-subtle);
 }
 .dala-tooltip::before { display: none; }
 
 .leaflet-container {
-  background: #000;
-  font-family: var(--font-ppneuemontreal);
+  background: var(--color-warm-taupe);
+  font-family: var(--font-inter);
 }
-/* dark-void skin for standard OSM tiles — keyless dark basemap */
+/* soften OSM tiles into the warm paper palette */
 .dala-tiles {
-  filter: invert(1) hue-rotate(180deg) brightness(0.62) contrast(1.15) saturate(0.25);
+  filter: saturate(0.35) contrast(0.92) brightness(1.04) sepia(0.14);
 }
 .leaflet-control-zoom a {
-  background: rgba(0, 0, 0, 0.75) !important;
-  color: var(--color-bone-white) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  background: var(--color-eggshell) !important;
+  color: var(--color-ink) !important;
+  border: 1px solid var(--color-stone) !important;
 }
 .leaflet-control-attribution {
-  background: rgba(0, 0, 0, 0.6) !important;
-  color: var(--color-ash-gray) !important;
+  background: rgba(253, 252, 252, 0.8) !important;
+  color: var(--color-ash) !important;
   font-size: 9px !important;
 }
-.leaflet-control-attribution a { color: var(--color-ash-gray) !important; }
+.leaflet-control-attribution a { color: var(--color-ash) !important; }
