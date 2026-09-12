@@ -1,0 +1,45 @@
+{
+  "file": "evidence/recordings/sinpo-market-promo.mp4",
+  "codec": "h264",
+  "pixel_format": "yuv420p",
+  "width": 1280,
+  "height": 720,
+  "fps": "30/1",
+  "frames": "1200",
+  "duration": "40.000000",
+  "audio_streams": 0,
+  "bytes": 4300993,
+  "sha256": "d80ee0224b14a186a5be1b5c8ec47236a15813a841f5116e4f0fc413a0718e2e",
+  "faststart": true,
+  "mp4_atoms": [
+    {
+      "type": "ftyp",
+      "offset": 0,
+      "size": 32
+    },
+    {
+      "type": "moov",
+      "offset": 32,
+      "size": 10522
+    },
+    {
+      "type": "free",
+      "offset": 10554,
+      "size": 8
+    },
+    {
+      "type": "mdat",
+      "offset": 10562,
+      "size": 4290431
+    }
+  ],
+  "full_decode": "PASS, exit 0; empty ffmpeg error log",
+  "sample_frames": [
+    84,
+    264,
+    474,
+    705,
+    909,
+    1125
+  ]
+}

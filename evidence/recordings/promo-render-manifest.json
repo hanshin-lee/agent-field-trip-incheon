@@ -1,0 +1,49 @@
+{
+  "output": "evidence/recordings/sinpo-market-promo.mp4",
+  "duration_seconds": 40,
+  "fps": 30,
+  "resolution": [
+    1280,
+    720
+  ],
+  "audio": false,
+  "source_assets": {
+    "07-cream-editorial.png": "86368baa6d75493b9e92234a0031db7ab8ccaefa9503c41270ac873ffc7be5b0",
+    "08-recipe-kimchijjigae.png": "d8e6910c80910d81b5a95f3867f283bd9c9cc6016fcaa5d433c1320e047f1f55"
+  },
+  "font": "/System/Library/Fonts/AppleSDGothicNeo.ttc",
+  "font_redistributed": false,
+  "output_sha256": "d80ee0224b14a186a5be1b5c8ec47236a15813a841f5116e4f0fc413a0718e2e",
+  "command": [
+    "/opt/homebrew/bin/ffmpeg",
+    "-hide_banner",
+    "-loglevel",
+    "warning",
+    "-y",
+    "-f",
+    "rawvideo",
+    "-pixel_format",
+    "rgb24",
+    "-video_size",
+    "1280x720",
+    "-framerate",
+    "30",
+    "-i",
+    "pipe:0",
+    "-an",
+    "-c:v",
+    "libx264",
+    "-preset",
+    "fast",
+    "-crf",
+    "18",
+    "-pix_fmt",
+    "yuv420p",
+    "-movflags",
+    "+faststart",
+    "-frames:v",
+    "1200",
+    "/Users/hanshin/.openclaw/workspace/agent-field-trip-incheon-promo/evidence/recordings/sinpo-market-promo.mp4"
+  ],
+  "elapsed_seconds": 5.27
+}

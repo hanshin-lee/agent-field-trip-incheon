@@ -8,7 +8,7 @@ reads this file and keeps going without re-deriving anything.
 ## Now
 
 - **Holder:** hanshin (driving via Hermes/Claude from Telegram)
-- **Last updated:** 2026-09-12 12:40 KST
+- **Last updated:** 2026-09-12 — README/video branch review (see current verification below)
 - **Provider in use:** `google`
 
 ## The mission
@@ -32,15 +32,18 @@ reads this file and keeps going without re-deriving anything.
 ## Done
 
 - [x] Repo scaffolded, deploys to Vercel, `/api/health` reports provider keys
-- [x] `lib/market.ts` — 18 stalls, 5 menus (닭강정·쫄면·만두·떡볶이·공갈빵)
-- [x] `app/MarketMap.tsx` — SVG schematic map, animated pins, dim/highlight
+- [x] `lib/market.ts` — 18 stalls, 16 menus in 4 categories, ingredient amounts and recipes
+- [x] `app/MarketMap.tsx` — Leaflet + OpenStreetMap tiles, animated pins, dim/highlight; approximate schematic-to-lat/lng stall coordinates
 - [x] `app/page.tsx` — menu chips, seller/ingredient cards, stall detail,
       Agent 장보기 코스 button, `?menu=<id>` deep link
 - [x] `npm run build` green; screenshots in `evidence/screenshots/`
 
 ## In flight
 
-- (none — submitted state)
+- README/promo complete and verified on `docs/mock-readme-promo-20260912`, based on `1e90c33`; pending human review, no main merge.
+- Video: `evidence/recordings/sinpo-market-promo.mp4` — 40s, 1280×720, 30fps, H.264/yuv420p, silent, fast-start; full decode and six sampled frames checked.
+- Agent delegated: reconcile design captures with implementation, document limits, render Korean promotional MP4 from project screenshots, verify output. No main merge or release publication.
+- Existing local `package.json` / `package-lock.json` edits remain untouched in the original worktree; this task uses a separate worktree.
 
 ## Next
 
@@ -52,12 +55,19 @@ reads this file and keeps going without re-deriving anything.
 ## Decisions already made — do not re-litigate
 
 - Next.js on Vercel; provider is a single env switch (`AGENT_PROVIDER`).
-- Map is a schematic SVG, NOT GPS/real map tiles — wayfinding inside the maze
-  is relative, and this works offline on flaky market wifi.
-- Stall data is curated in `lib/market.ts`; edit there, positions are x=0(서문)→100(동문).
+- Current map uses Leaflet + real OSM basemap tiles (supersedes the earlier SVG design); network is required for tiles. No offline map or user GPS navigation.
+- Stall data is curated in `lib/market.ts`; positions are x=0(서문)→100(동문), linearly projected onto a market footprint, NOT surveyed GPS points. Verify stores, coordinates and inventory before relying on them.
+- Visual reference: `07-cream-editorial.png` (style) and `08-recipe-kimchijjigae.png` (latest category/recipe UI). No separate mock source found in current tracked files, remote branch list, PRs or issues; do not invent one.
 
 ## Blockers
 
-- Vercel production env vars exist but are empty placeholders → `/api/health`
-  shows `available: []`. Decision (12:45): ship without key; 코스 button surfaces
-  a clean error. Deployed prod: https://agent-field-trip-incheon.vercel.app
+- Live check 2026-09-12: public home HTTP 200; `/api/health` reports `active: google`, `available: []`. This proves key presence is empty, not a provider connectivity test. No paid AI request performed. Demo: https://agent-field-trip-incheon.vercel.app
+- `npm run build` passes, but `npx tsc --noEmit` fails at existing `next.config.ts:7` (`eslint` is not a NextConfig property in Next.js 16). Build skips types. Left config unchanged: this task is documentation/media, not app/config repair.
+- Real-time stock/prices/hours, exact routing, checkout and verified store coordinates are not implemented.
+
+## README/video verification (2026-09-12)
+
+- `npm ci`: 0 reported vulnerabilities.
+- Dataset check: 4 categories / 16 unique menu IDs / 18 unique stall IDs; all seller/ingredient references resolve, all recipes have steps and ingredient amounts, projected coordinates are finite. This is structural validation, not factual validation.
+- Local API: health HTTP 200; empty prompt HTTP 400 with `prompt is required` (no provider call).
+- Detailed evidence and video reproduction are recorded in `docs/VERIFICATION.md` and `docs/PROMO.md`.
