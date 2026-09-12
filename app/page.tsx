@@ -1,8 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import MarketMap from "./MarketMap";
+import dynamic from "next/dynamic";
 import { MENUS, stallById } from "@/lib/market";
+
+// Leaflet touches `window` — client-only
+const MarketMap = dynamic(() => import("./MarketMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[420px] w-full items-center justify-center rounded-3xl bg-black">
+      <span className="body-light text-[14px] text-[var(--color-ash-gray)]">지도 불러오는 중…</span>
+    </div>
+  ),
+});
 
 export default function Home() {
   const [menuId, setMenuId] = useState<string | null>(null);

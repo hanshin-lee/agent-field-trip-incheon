@@ -134,3 +134,17 @@ export const MENUS: Menu[] = [
 export function stallById(id: string): Stall | undefined {
   return STALLS.find((s) => s.id === id);
 }
+
+/* ── Real-world georeferencing ──────────────────────────────────────────
+ * 신포국제시장's covered arcade runs roughly west→east between 신포사거리
+ * and the 답동성당 side. We map the schematic space onto that footprint:
+ *   x: 0(서문) → 100(동문)  ≈ lng 126.62520 → 126.62800
+ *   y: 0(북)  → 60(남)     ≈ lat 37.47185 → 37.47085
+ */
+export const MARKET_CENTER: [number, number] = [37.47135, 126.6266];
+
+export function stallLatLng(s: Stall): [number, number] {
+  const lat = 37.47185 - (s.y / 60) * (37.47185 - 37.47085);
+  const lng = 126.6252 + (s.x / 100) * (126.628 - 126.6252);
+  return [lat, lng];
+}

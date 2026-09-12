@@ -1,6 +1,8 @@
 "use client";
 
-import { STALLS, Stall } from "@/lib/market";
+import { useEffect, useRef } from "react";
+import type { Map as LeafletMap, Marker, CircleMarker } from "leaflet";
+import { STALLS, MARKET_CENTER, stallLatLng } from "@/lib/market";
 
 interface Props {
   highlightSellers: Set<string>;
@@ -9,46 +11,25 @@ interface Props {
   onSelect: (id: string | null) => void;
 }
 
-/** deterministic pseudo-random for the ambient particle field */
-function rand(seed: number) {
-  const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
-  return x - Math.floor(x);
-}
+const IRIS = "#8052ff";
+const SPARK = "#ffb829";
+const DIM = "rgba(255,255,255,0.45)";
 
-const TRI_COLORS = ["#8052ff", "#ffb829", "#15846e", "#d946ef", "#3b82f6"];
-
-function AmbientTriangles() {
-  const tris = Array.from({ length: 46 }, (_, i) => {
-    const x = rand(i) * 100;
-    const y = rand(i + 100) * 60;
-    const s = 0.7 + rand(i + 200) * 1.1;
-    const rot = rand(i + 300) * 360;
-    const color = TRI_COLORS[Math.floor(rand(i + 400) * TRI_COLORS.length)];
-    const op = 0.15 + rand(i + 500) * 0.4;
-    return { x, y, s, rot, color, op, slow: i % 3 === 0 };
-  });
-  return (
-    <g pointerEvents="none">
-      {tris.map((t, i) => (
-        <path
-          key={i}
-          className={t.slow ? "tri-drift-slow" : "tri-drift"}
-          d={`M ${t.x} ${t.y - t.s} L ${t.x + t.s * 0.87} ${t.y + t.s * 0.5} L ${t.x - t.s * 0.87} ${t.y + t.s * 0.5} Z`}
-          fill="none"
-          stroke={t.color}
-          strokeWidth="0.22"
-          opacity={t.op}
-          transform={`rotate(${t.rot} ${t.x} ${t.y})`}
-          style={{ animationDelay: `${(i % 7) * -1.3}s` }}
-        />
-      ))}
-    </g>
-  );
+function pinHtml(color: string, big: boolean, glow: boolean) {
+  const size = big ? 18 : 11;
+  return `<div style="
+    width:${size}px;height:${size}px;border-radius:50%;
+    background:${color};
+    border:1.5px solid rgba(255,255,255,0.85);
+    box-shadow:${glow ? `0 0 12px 3px ${color}88, 0 0 3px 1px ${color}` : "0 0 4px rgba(0,0,0,0.8)"};
+    ${glow ? "animation: dala-pulse 1.6s ease-out infinite;" : ""}
+  "></div>`;
 }
 
 /**
- * Schematic map of 신포국제시장 as a constellation on the void: the arcade is
- * drawn with faint strokes only — no panels, no fills. Stalls are point-lights.
+ * Real interactive map (Leaflet + CARTO dark tiles — keyless) of
+ * 신포국제시장. Stalls are glowing point-lights on the dark basemap;
+ * violet = sells the dish, amber = sells ingredients.
  */
 export default function MarketMap({
   highlightSellers,
@@ -56,107 +37,145 @@ export default function MarketMap({
   selectedStallId,
   onSelect,
 }: Props) {
-  const anyHighlight = highlightSellers.size > 0 || highlightIngredients.size > 0;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<LeafletMap | null>(null);
+  const markersRef = useRef<Record<string, Marker>>({});
+  const LRef = useRef<typeof import("leaflet") | null>(null);
+
+  // init once
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const L = (await import("leaflet")).default;
+      if (cancelled || !containerRef.current || mapRef.current) return;
+      LRef.current = L;
+
+      const map = L.map(containerRef.current, {
+        center: MARKET_CENTER,
+        zoom: 17,
+        zoomControl: false,
+        attributionControl: true,
+      });
+      L.control.zoom({ position: "bottomright" }).addTo(map);
+
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19,
+        className: "dala-tiles",
+      }).addTo(map);
+
+      map.on("click", () => onSelect(null));
+      mapRef.current = map;
+
+      // draw markers immediately with current highlight state
+      drawMarkers();
+    })();
+    return () => {
+      cancelled = true;
+      mapRef.current?.remove();
+      mapRef.current = null;
+      markersRef.current = {};
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function drawMarkers() {
+    const L = LRef.current;
+    const map = mapRef.current;
+    if (!L || !map) return;
+
+    Object.values(markersRef.current).forEach((m) => m.remove());
+    markersRef.current = {};
+
+    const anyHighlight = highlightSellers.size > 0 || highlightIngredients.size > 0;
+
+    STALLS.forEach((s) => {
+      const isSeller = highlightSellers.has(s.id);
+      const isIng = highlightIngredients.has(s.id);
+      const lit = isSeller || isIng;
+      const color = isSeller ? IRIS : isIng ? SPARK : DIM;
+      const dimmed = anyHighlight && !lit;
+
+      const icon = L.divIcon({
+        className: "dala-pin",
+        html: pinHtml(color, lit, lit),
+        iconSize: lit ? [18, 18] : [11, 11],
+        iconAnchor: lit ? [9, 9] : [5.5, 5.5],
+      });
+
+      const marker = L.marker(stallLatLng(s), {
+        icon,
+        opacity: dimmed ? 0.25 : 1,
+        zIndexOffset: lit ? 1000 : 0,
+      }).addTo(map);
+
+      marker.bindTooltip(s.name, {
+        direction: "top",
+        offset: [0, -10],
+        permanent: lit,
+        className: "dala-tooltip",
+        opacity: 1,
+      });
+
+      marker.on("click", (e) => {
+        L.DomEvent.stopPropagation(e as unknown as Event);
+        onSelect(s.id);
+      });
+
+      markersRef.current[s.id] = marker;
+    });
+  }
+
+  // redraw on highlight change + fit to lit pins
+  useEffect(() => {
+    const L = LRef.current;
+    const map = mapRef.current;
+    if (!L || !map) return;
+    drawMarkers();
+
+    const litIds = [...highlightSellers, ...highlightIngredients];
+    if (litIds.length > 0) {
+      const pts = litIds
+        .map((id) => STALLS.find((s) => s.id === id))
+        .filter(Boolean)
+        .map((s) => stallLatLng(s!));
+      map.fitBounds(L.latLngBounds(pts), { padding: [46, 46], maxZoom: 18 });
+    } else {
+      map.setView(MARKET_CENTER, 17);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [highlightSellers, highlightIngredients]);
+
+  // selection ring
+  useEffect(() => {
+    const L = LRef.current;
+    const map = mapRef.current;
+    if (!L || !map) return;
+    let ring: CircleMarker | null = null;
+    if (selectedStallId) {
+      const s = STALLS.find((st) => st.id === selectedStallId);
+      if (s) {
+        ring = L.circleMarker(stallLatLng(s), {
+          radius: 16,
+          color: "#ffffff",
+          weight: 1.5,
+          fill: false,
+          dashArray: "3 4",
+        }).addTo(map);
+        map.panTo(stallLatLng(s));
+      }
+    }
+    return () => {
+      ring?.remove();
+    };
+  }, [selectedStallId]);
 
   return (
-    <svg
-      viewBox="-2 -4 104 70"
-      className="w-full select-none"
-      role="img"
-      aria-label="신포국제시장 지도"
-      onClick={() => onSelect(null)}
-    >
-      <AmbientTriangles />
-
-      {/* arcade paths — ghost strokes on the void */}
-      <g fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="0.35" strokeDasharray="1.4 1.1">
-        <rect x="3" y="22" width="94" height="12" rx="2" />
-        <rect x="53" y="8" width="10" height="40" rx="2" />
-      </g>
-
-      <text x="26" y="29.9" textAnchor="middle" fontSize="2.5" fill="var(--color-ash-gray)" letterSpacing="0.6" fontWeight="200">
-        본길 · 중앙 아케이드
-      </text>
-
-      {/* entrances */}
-      <g fontSize="2.4" fill="var(--color-ash-gray)" fontWeight="600" letterSpacing="0.3">
-        <text x="1" y="20" textAnchor="start">◀ 서문</text>
-        <text x="99" y="20" textAnchor="end">동문 ▶</text>
-      </g>
-
-      {STALLS.map((s) => (
-        <StallPin
-          key={s.id}
-          stall={s}
-          isSeller={highlightSellers.has(s.id)}
-          isIngredient={highlightIngredients.has(s.id)}
-          dimmed={anyHighlight && !highlightSellers.has(s.id) && !highlightIngredients.has(s.id)}
-          selected={selectedStallId === s.id}
-          onSelect={onSelect}
-        />
-      ))}
-    </svg>
-  );
-}
-
-function StallPin({
-  stall,
-  isSeller,
-  isIngredient,
-  dimmed,
-  selected,
-  onSelect,
-}: {
-  stall: Stall;
-  isSeller: boolean;
-  isIngredient: boolean;
-  dimmed: boolean;
-  selected: boolean;
-  onSelect: (id: string) => void;
-}) {
-  const color = isSeller
-    ? "var(--color-electric-iris)"
-    : isIngredient
-      ? "var(--color-saffron-spark)"
-      : "rgba(255,255,255,0.35)";
-  const r = isSeller || isIngredient ? 2.4 : 1.4;
-
-  return (
-    <g
-      opacity={dimmed ? 0.18 : 1}
-      style={{ cursor: "pointer", transition: "opacity 0.25s" }}
-      onClick={(e) => {
-        e.stopPropagation();
-        onSelect(stall.id);
-      }}
-    >
-      {(isSeller || isIngredient) && (
-        <circle className="pulse-ring" cx={stall.x} cy={stall.y} r={r} fill="none" stroke={color} strokeWidth="0.5" />
-      )}
-      <circle
-        className={isSeller || isIngredient ? "pin-pop" : undefined}
-        cx={stall.x}
-        cy={stall.y}
-        r={r}
-        fill={isSeller || isIngredient ? color : "none"}
-        stroke={selected ? "var(--color-bone-white)" : color}
-        strokeWidth={selected ? 0.8 : 0.45}
-      />
-      {(isSeller || isIngredient || selected) && (
-        <text
-          x={stall.x > 78 ? 100 : stall.x < 8 ? 0 : stall.x}
-          y={stall.y - r - 1.4}
-          textAnchor={stall.x > 78 ? "end" : stall.x < 8 ? "start" : "middle"}
-          fontSize="2.7"
-          fontWeight="400"
-          fill="var(--color-bone-white)"
-          stroke="var(--color-void)"
-          strokeWidth="0.6"
-          paintOrder="stroke"
-        >
-          {stall.name}
-        </text>
-      )}
-    </g>
+    <div
+      ref={containerRef}
+      className="h-[420px] w-full overflow-hidden rounded-3xl"
+      style={{ background: "#000" }}
+    />
   );
 }
