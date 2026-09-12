@@ -2,21 +2,31 @@
 
 ### 오늘 뭐 먹지? 시장이 답해요.
 
-> **리뷰 브랜치 업데이트 (2026-09-12):** 메뉴 24개와 재료 담기 애니메이션을 구현했습니다. 이 변경은 `feat/menu-ingredient-animation-20260912`에서 검토용으로 제공하며 **main 병합·새 배포는 하지 않았습니다.** 아래 공개 서비스 링크는 이 브랜치의 기능을 보장하지 않습니다.
+> **제출 상태 (2026-09-12):** 현장 관찰 · 레시피 · 지도 · 재료 담기 애니메이션까지 모두 `main`에 병합해 배포했습니다. 아래 링크가 제출본입니다.
 
 미로 같은 **인천 신포국제시장**에서, 먹고 싶은 메뉴를 기준으로 **바로 사 먹을 집과 재료를 살 가게**를 함께 찾아보는 모바일 중심 프로토타입입니다. 메뉴를 고르면 지도와 재료 분량, 만드는 법이 한 화면에서 이어집니다.
 
 **[서비스 열기](https://agent-field-trip-incheon.vercel.app)** · **[쫄면으로 둘러보기](https://agent-field-trip-incheon.vercel.app/?menu=jjolmyeon)** · **[김치찌개 레시피](https://agent-field-trip-incheon.vercel.app/?menu=kimchijjigae)**
 
+## 제출 — 완주 요건 3가지
+
+[행사 완주 요건](docs/EVENT.md) 세 가지에 대응하는 산출물입니다.
+
+| # | 요건 | 산출물 |
+| --- | --- | --- |
+| 1 | 현장에서 남긴 사진이나 메모 1개 | **[건어물전 관찰 메모](evidence/field-notes/1150-건어물전-관찰메모.md)** · **[현장 사진](evidence/field-notes/1150-건어물전-파리퇴치기.jpg)** (11:50 KST, 동인천) · [신포국제시장 메모](evidence/field-notes/sinpo-observation.md) |
+| 2 | 그 발견이 반영된 작동하는 핵심 서비스 1개 | **[배포 URL](https://agent-field-trip-incheon.vercel.app)** · [조작 데모 MP4](evidence/recordings/menu-ingredient-demo.mp4) · [홍보 MP4](evidence/recordings/sinpo-market-promo.mp4) · [화면 캡처](evidence/screenshots/) |
+| 3 | Agent에게 맡긴 역할 | **[HANDOFF.md](HANDOFF.md)** — 위임 항목과 판단 기록 |
+
 > GDG Incheon Agent Field Trip · 2026.09.12
 >
 > “인천의 현장에서 발견한 장소 경험 하나를 Agent와 함께 작동하는 서비스로.”
 
-## 새로 담은 8가지 메뉴
+## 메뉴 24개와 재료 담기 애니메이션
 
 카테고리별 6개, 총 **24개 메뉴 / 4개 카테고리 / 기존 18개 가게**입니다.
 
-| 카테고리 | 추가 메뉴 |
+| 카테고리 | 마지막 라운드에 추가한 메뉴 |
 | --- | --- |
 | 시장 명물 | 계란빵, 야채튀김 |
 | 분식 | 라볶이, 잔치국수 |
@@ -124,7 +134,7 @@ npx tsc --noEmit
 node scripts/validate-market.cjs
 ```
 
-이번 리뷰 브랜치에서 Next.js 16의 obsolete `eslint` 설정만 제거해 기존 TS2353 오류를 해결했습니다. 원래의 `ignoreBuildErrors` 설정은 보존하므로 **빌드 성공만으로 타입 검증을 대신할 수 없으며 `npx tsc --noEmit`을 별도로 실행합니다.** [현재 확장 기능 검증](docs/MENU-ANIMATION-VERIFICATION.md)과 [이전 README·영상 검증 기록](docs/VERIFICATION.md)을 구분했습니다. `npm run lint`는 기존 `next lint` 스크립트로, Next.js 16에서 사용할 수 없으므로 검증 완료 항목으로 취급하지 않습니다.
+Next.js 16의 obsolete `eslint` 설정을 제거해 기존 TS2353 오류를 해결했습니다. 원래의 `ignoreBuildErrors` 설정은 보존하므로 **빌드 성공만으로 타입 검증을 대신할 수 없으며 `npx tsc --noEmit`을 별도로 실행합니다.** [현재 확장 기능 검증](docs/MENU-ANIMATION-VERIFICATION.md)과 [이전 README·영상 검증 기록](docs/VERIFICATION.md)을 구분했습니다. `npm run lint`는 기존 `next lint` 스크립트로, Next.js 16에서 사용할 수 없으므로 검증 완료 항목으로 취급하지 않습니다.
 
 ```text
 app/page.tsx                 카테고리·메뉴·가게 상세·레시피·AI 요청 UI
@@ -144,8 +154,15 @@ HANDOFF.md                  진행 상태와 다음 작업
 
 ## 현장 발견과 Agent 협업 기록
 
-처음 온 사람에게 시장은 미로입니다. “쫄면을 만들려면 사리와 야채를 어디서 사지?”라는 질문에서 메뉴 중심 지도가 출발했습니다. [현장 관찰 메모](evidence/field-notes/sinpo-observation.md)는 이 문제를 기록합니다. 화면 캡처는 구현 증거이며 현장 사진을 대신하지 않습니다.
+처음 온 사람에게 시장은 미로입니다. “쫄면을 만들려면 사리와 야채를 어디서 사지?”라는 질문에서 메뉴 중심 지도가 출발했습니다.
+
+현장에서 남긴 기록은 두 가지입니다.
+
+- **[건어물전 관찰 메모](evidence/field-notes/1150-건어물전-관찰메모.md)** (11:50 KST, 동인천) — 냉장 없는 야외 건어물 노점에서 **회전식 자동 파리퇴치기**로 신선도를 관리하는 운영 노하우를 봤습니다. [현장 사진](evidence/field-notes/1150-건어물전-파리퇴치기.jpg)이 함께 있습니다. 여기서 “**로컬 시장의 신선한 재료를 경험하고 싶지만, 무엇을 어느 가게에서 파는지 몰라 압도되는 방문객**”이라는 문제의식이 나왔습니다.
+- **[신포국제시장 메모](evidence/field-notes/sinpo-observation.md)** — 같은 문제를 메뉴 기준 길안내의 부재로 좁혀 기록했습니다.
+
+`evidence/screenshots/`의 화면 캡처는 구현 증거이며, 위 현장 사진과 역할이 다릅니다.
 
 Agent에게 데이터 매핑, 지도·레시피 UI, 제공자 연결, 검증·배포, README 정리와 홍보 영상 제작을 위임했습니다. 현재 상태는 [HANDOFF.md](HANDOFF.md), 행사 기준은 [docs/EVENT.md](docs/EVENT.md), 팀 인수인계 방식은 [docs/TOKEN-RELAY.md](docs/TOKEN-RELAY.md)를 참고하세요.
 
-`npm run pickup`은 pull을, `npm run handoff`는 변경 파일의 커밋·푸시를 수행하는 팀용 도구입니다. 로컬 수정과 현재 브랜치를 확인하고 사용하세요. 이 README·영상 작업은 별도 브랜치에서 진행하며 main에 자동 병합하지 않습니다.
+`npm run pickup`은 pull을, `npm run handoff`는 변경 파일의 커밋·푸시를 수행하는 팀용 도구입니다. 로컬 수정과 현재 브랜치를 확인하고 사용하세요. 제출 시점 기준 README·영상·메뉴 확장 작업은 모두 `main`에 병합됐습니다.
