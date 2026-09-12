@@ -11,7 +11,7 @@ Update it **before** you run `npm run handoff`.
 ## Now
 
 - **Holder:** _(your name — who is actively driving right now)_
-- **Last updated:** _(run `npm run handoff`, it stamps this)_
+- **Last updated:** 2026-09-12 10:55 KST (by hanshin)
 - **Provider in use:** `google` _(google | openai | anthropic | runyour)_
 
 ## The mission (fill in at 11:10)
